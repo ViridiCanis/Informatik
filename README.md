@@ -1,7 +1,11 @@
 # Informatik
 
-[VSCode](https://code.visualstudio.com/Download) (zip) + Live Share  
+[VSCode][1] (zip) + Live Share  
 
 source control:  
-[GitHub CLI](https://github.com/cli/cli/releases/tag/v1.5.0) (zip)  
-[Git](https://git-scm.com/download/win) (get portable)
+[GitHub CLI][2] (zip)  
+[Git][3] (get portable)
+
+[1]: https://code.visualstudio.com/Download
+[2]: https://github.com/cli/cli/releases/tag/v1.5.0
+[3]: https://git-scm.com/download/win
