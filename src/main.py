@@ -1,6 +1,3 @@
-from logik import Spiel
-
-class GUI:
-    pass
+from gui import GUI
 
 GUI()
