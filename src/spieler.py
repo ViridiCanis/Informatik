@@ -8,7 +8,7 @@ class Spieler(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((50, 50))
-        self.image.fill(GREEN)
+        self.image.fill((0, 255, 0))
         self.rect = self.image.get_rect()
         bewegung = 2
         hp = 10
@@ -39,5 +39,3 @@ class Spieler(pygame.sprite.Sprite):
 
 
 player = Spieler()
-
-        
