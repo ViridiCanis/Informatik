@@ -1,14 +1,22 @@
 import pygame
-import os
+import pygame.freetype
 from pygame.locals import *
+# import os
+
 from logik import Spiel
 
 class GUI:
     def __init__(self):
         self.läuft = True
         pygame.init()
-        self.fenster = pygame.display.set_mode((860, 860))
+        self.fenster = pygame.display.set_mode((800, 700))
         pygame.display.set_caption("Pygame - tooolles Spiel")
+
+        self.schriftart = pygame.freetype.SysFont('Consolas', 18, True)
+        self.reset_button = pygame.Surface((95, 20))
+        self.reset_button.fill((50, 50, 50))
+        self.next_button = pygame.Surface((95, 20))
+        self.next_button.fill((50, 50, 50))
 
         self.wand_bild = pygame.image.load("images/wand.png")
         self.weg_bild = pygame.image.load("images/weg.png")
@@ -16,13 +24,18 @@ class GUI:
         #self.win_bild =  pygame.image.load("images/victory.png")
         #self.lose_bild = pygame.image.load("images/lose.png")
         self.spiel = Spiel()
-        self.lade_level("level1")
+        self.spiel.lade_level(1)
+        self.setup()
+        self.spiel.setup_felder()
 
         self.spielloop()
 
-    def lade_level(self, datei):
-        self.spiel.lade_level(datei)
-        self.feldgröße = 860//max(self.spiel.höhe, self.spiel.breite)
+    def reset(self):
+        self.spiel.lade_level(self.spiel.letztes_level)
+        self.setup()
+
+    def setup(self):
+        self.feldgröße = 700//max(self.spiel.höhe, self.spiel.breite)
         # -1 damit die Gitterlinien sichtbar bleiben
         self.wand_feld = pygame.transform.scale(self.wand_bild, 
                             (self.feldgröße-1, self.feldgröße-1))
@@ -93,8 +106,8 @@ class GUI:
     """
 
     def spielloop(self):
-        self.läuft = True
-        while self.läuft:
+        self.läuft = True     
+        while not self.spiel.gewonnen and self.läuft:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.läuft = False
@@ -108,9 +121,54 @@ class GUI:
                         self.spiel.spieler.update("v")
                     elif e.key == K_d or e.key == K_RIGHT:
                         self.spiel.spieler.update(">")
+                elif e.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+                    pos = pygame.mouse.get_pos()
+                    if self.reset_rect.collidepoint(pos):
+                        self.reset()
+
+            #for y in range(self.spiel.)
             
             self.fenster.fill((255, 255, 255))
             self.mal_gitter()
             self.mal_level()
 
+            # buttons
+            self.reset_rect = self.fenster.blit(self.reset_button, (710, 50))
+            self.schriftart.render_to(self.fenster, (715, 55), "reset", (255, 255, 255))
+
+            self.schriftart.render_to(self.fenster, (715, 75), 
+            str(self.spiel.spieler.bewegung_in_runde), (255, 255, 255))
+
             pygame.display.flip()
+        
+        while self.läuft: # gewonnen und wartet auf Interaktion
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    self.läuft = False
+                    break
+                elif e.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+                    pos = pygame.mouse.get_pos()
+                    if self.reset_rect.collidepoint(pos):
+                        self.reset()
+                        self.läuft = False
+                    elif self.next_rect.collidepoint(pos):
+                        self.spiel.lade_level(self.spiel.letztes_level+1)
+                        self.setup()
+                        self.läuft = False
+            
+            self.fenster.fill((255, 255, 255))
+
+            # win-menu über restliches Interface malen
+            pygame.draw.rect(self.fenster, (0, 0, 0), pygame.Rect(0, 0, 700, 700))
+
+            self.schriftart.render_to(self.fenster, (280, 300), "Level gewonnen", (255, 255, 255))
+
+            # buttons
+            self.next_rect = self.fenster.blit(self.next_button, (250, 400))
+            self.schriftart.render_to(self.fenster, (255, 405), "nächstes", (255, 255, 255))
+            self.reset_rect = self.fenster.blit(self.reset_button, (380, 400))
+            self.schriftart.render_to(self.fenster, (385, 405), "neustart", (255, 255, 255))
+
+            pygame.display.flip()
+        
+        self.spielloop()

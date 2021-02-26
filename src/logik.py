@@ -8,9 +8,14 @@ class Spiel:
         self.level = []
         self.breite = 0
         self.höhe = 0
+        self.gewonnen = False
         self.spieler = ""
+        self.letztes_level = 0
 
-    def lade_level(self, levelDatei):
+    def lade_level(self, level):
+        self.gewonnen = False
+        self.letztes_level = level
+        levelDatei = "level" + str(level)
         self.level = []
         with open("level/{}".format(levelDatei), "r") as datei:
             text = datei.read()
@@ -33,11 +38,16 @@ class Spiel:
                 else:
                     zeile.append("")
             self.level.append(zeile)
-    """
-    def level_win(self, Spieler):
-        if Spieler.y == Ziel.y:
-             return True
-    """         
+    
+    def setup_felder(self): # für alles was Zugriff auf andere Objekte braucht
+        for y in range(self.höhe):
+            for x in range(self.breite):
+                if not isinstance(self.level[y][x], str):
+                    self.level[y][x].setup()
 
+    
+        
+
+   
 
     
