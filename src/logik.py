@@ -45,9 +45,3 @@ class Spiel:
                 if not isinstance(self.level[y][x], str):
                     self.level[y][x].setup()
 
-    
-        
-
-   
-
-    

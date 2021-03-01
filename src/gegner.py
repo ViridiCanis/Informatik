@@ -47,17 +47,3 @@ class Gegner(pygame.sprite.Sprite):
             #idk
             spiel.spieler.hp = spiel.spieler.hp - self.atk
 
-        
-            
-
-
-            
-
-
-        
-            
-            
-            
-    def __str__(self):
-        return "Gegner"
-        

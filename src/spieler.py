@@ -61,7 +61,3 @@ class Spieler(pygame.sprite.Sprite):
         else:   
             print("keine Züge übrig")
                 
-
-    def __str__(self):
-        return "Spieler"
-        
