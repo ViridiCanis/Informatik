@@ -26,7 +26,7 @@ class GUI:
         #self.win_bild =  pygame.image.load("images/victory.png")
         #self.lose_bild = pygame.image.load("images/lose.png")
         self.spiel = Spiel()
-        self.lade_level(2)
+        self.lade_level(1)
 
         self.next = "level"
         while self.next != "exit":
@@ -188,7 +188,7 @@ class GUI:
             self.fenster.fill((255, 255, 255))
             self.fenster.fill((0, 0, 0), rect=pygame.Rect(0, 0, self.feldgröße*self.spiel.breite, self.feldgröße*self.spiel.höhe))
             self.mal_gitter()
-            self.mal_level_begrenzt()
+            self.mal_level()#_begrenzt()
 
             if self.spiel.spieler.bewegung_in_runde == 0:
                 self.big_schriftart.render_to(self.fenster, (100, 100), "keine", (255, 200, 200))
