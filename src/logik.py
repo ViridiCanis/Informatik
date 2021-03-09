@@ -23,6 +23,7 @@ class Spiel:
         text = text.split("\n")
         self.breite, self.höhe, züge = [int(x) for x in text[0].split(" ")]
         level = [zeile.split(" ") for zeile in text[1:]]
+        gid = 0
         for y in range(self.höhe):
             zeile = []
             for x in range(self.breite):
@@ -34,7 +35,8 @@ class Spiel:
                 elif level[y][x] == "Z":
                     zeile.append("Ziel")
                 elif level[y][x] == "G":
-                    zeile.append(Gegner(x, y, self))
+                    zeile.append(Gegner(x, y, self, id=gid))
+                    gid += 1
                 else:
                     zeile.append("")
             self.level.append(zeile)

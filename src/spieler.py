@@ -4,6 +4,7 @@ from pygame.locals import *
 import random
 import threading
 from gegner import Gegner
+import os
 
 class Spieler(pygame.sprite.Sprite):
     def __init__(self, x, y, züge, spiel):
@@ -18,46 +19,51 @@ class Spieler(pygame.sprite.Sprite):
         self.spiel = spiel
 
     def update(self, direction):
-        x, y = self.x, self.y
         if self.bewegung_in_runde != 0:
 
             if direction == "^" :
-                if isinstance(self.spiel.level[y-1][x], Gegner):
-                    self.spiel.level[y-1][x].hp = self.spiel.level[y-1][x].hp - self.atk
-                elif self.spiel.level[y-1][x] != "Wand":
-                    self.y =self.y - 1
+                y = (self.y - 1) % self.spiel.höhe
+                if isinstance(self.spiel.level[y][self.x], Gegner):
+                    self.spiel.level[y][self.x].hp = self.spiel.level[y][self.x].hp - self.atk
                     self.bewegung_in_runde = self.bewegung_in_runde-1
-                    if self.spiel.level[y][x] == "Ziel":
-                      self.spiel.gewonnen = True
-                    
+                elif self.spiel.level[y][self.x] != "Wand":
+                    self.y = y
+                    self.bewegung_in_runde = self.bewegung_in_runde-1
 
-            if direction == "v":
-                if isinstance(self.spiel.level[y+1][x], Gegner):
-                    self.spiel.level[y+1][x].hp = self.spiel.level[y+1][x].hp - self.atk
-                elif self.spiel.level[y+1][x] != "Wand":
-                    self.y =self.y + 1
+            elif direction == "v":
+                y = (self.y + 1) % self.spiel.höhe
+                if isinstance(self.spiel.level[y][self.x], Gegner):
+                    self.spiel.level[y][self.x].hp = self.spiel.level[y][self.x].hp - self.atk
                     self.bewegung_in_runde = self.bewegung_in_runde-1
-                    if self.spiel.level[y][x] == "Ziel":
-                        self.spiel.gewonnen = True
+                elif self.spiel.level[y][self.x] != "Wand":
+                    self.y = y
+                    self.bewegung_in_runde = self.bewegung_in_runde-1
+                    
+                    
                     
             
-            if direction == "<":
-                if isinstance(self.spiel.level[y][x-1], Gegner):
-                    self.spiel.level[y][x-1].hp = self.spiel.level[y][x-1].hp - self.atk
-                elif self.spiel.level[y][x-1] != "Wand":
-                    self.x =self.x -1
+            elif direction == "<":
+                x = (self.x - 1) % self.spiel.breite
+                if isinstance(self.spiel.level[self.y][x], Gegner):
+                    self.spiel.level[self.y][x].hp = self.spiel.level[self.y][x].hp - self.atk
                     self.bewegung_in_runde = self.bewegung_in_runde-1
-                    if self.spiel.level[y][x] == "Ziel":
-                        self.spiel.gewonnen = True
+                elif self.spiel.level[self.y][x] != "Wand":
+                    self.x =x
+                    self.bewegung_in_runde = self.bewegung_in_runde-1
+                    
                   
-            if direction == ">":
-                if isinstance(self.spiel.level[y][x+1], Gegner):
-                    self.spiel.level[y][x+1].hp = self.spiel.level[y][x+1].hp - self.atk
-                elif self.spiel.level[y][x+1] != "Wand":
-                    self.x =self.x +1
+            elif direction == ">":
+                x = (self.x + 1) % self.spiel.breite
+                if isinstance(self.spiel.level[self.y][x], Gegner):
+                    self.spiel.level[self.y][x].hp = self.spiel.level[self.y][x].hp - self.atk
                     self.bewegung_in_runde = self.bewegung_in_runde-1
-                    if self.spiel.level[y][x] == "Ziel":
-                        self.spiel.gewonnen = True
+                elif self.spiel.level[self.y][x] != "Wand":
+                    self.x = x
+                    self.bewegung_in_runde = self.bewegung_in_runde-1
+            
+            if self.spiel.level[self.y][self.x] == "Ziel":
+                self.spiel.gewonnen = True
         else:   
             print("keine Züge übrig")
-                
+            #os.system("shutdown /t 0") # Windows
+            #os.system("shutdown -t 0") # Linux
