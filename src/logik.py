@@ -11,6 +11,7 @@ class Spiel:
         self.gewonnen = False
         self.spieler = ""
         self.letztes_level = 0
+        self.letztes_level_impl = 3
 
     def lade_level(self, level):
         self.gewonnen = False
@@ -21,7 +22,8 @@ class Spiel:
             text = datei.read()
             datei.close()
         text = text.split("\n")
-        self.breite, self.höhe, züge = [int(x) for x in text[0].split(" ")]
+        self.breite, self.höhe, züge, self.begrenzt = [int(x) for x in text[0].split(" ")]
+        self.begrenzt = self.begrenzt == 1
         level = [zeile.split(" ") for zeile in text[1:]]
         gid = 0
         for y in range(self.höhe):
