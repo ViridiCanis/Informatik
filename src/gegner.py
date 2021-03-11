@@ -37,19 +37,19 @@ class Gegner(pygame.sprite.Sprite):
         s_x, s_y = self.spiel.spieler.x, self.spiel.spieler.y
         d = abs(self.g_x - s_x) + abs(self.g_y - s_y)
         if d > 1:
-            if s_y > self.g_y and self.spiel.level[self.g_y + 1][self.g_x] != "Wand":
+            if s_y > self.g_y and self.spiel.level[self.g_y + 1][self.g_x] == "":
                 self.spiel.level[self.g_y + 1][self.g_x] = self
                 self.spiel.level[self.g_y][self.g_x] = ""
                 self.g_y = self.g_y + 1
-            elif s_y < self.g_y and self.spiel.level[self.g_y - 1][self.g_x] != "Wand":
+            elif s_y < self.g_y and self.spiel.level[self.g_y - 1][self.g_x] == "":
                 self.spiel.level[self.g_y - 1][self.g_x] = self
                 self.spiel.level[self.g_y][self.g_x] = ""
                 self.g_y = self.g_y - 1
-            elif s_x > self.g_x and self.spiel.level[self.g_y][self.g_x + 1] != "Wand":
+            elif s_x > self.g_x and self.spiel.level[self.g_y][self.g_x + 1] == "":
                 self.spiel.level[self.g_y][self.g_x + 1] = self
                 self.spiel.level[self.g_y][self.g_x] = ""
                 self.g_x = self.g_x + 1
-            elif s_x < self.g_x and self.spiel.level[self.g_y][self.g_x - 1] != "Wand":
+            elif s_x < self.g_x and self.spiel.level[self.g_y][self.g_x - 1] == "":
                 self.spiel.level[self.g_y][self.g_x - 1] = self
                 self.spiel.level[self.g_y][self.g_x] = ""
                 self.g_x = self.g_x - 1
