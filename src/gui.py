@@ -192,7 +192,7 @@ class GUI:
         self.big_schriftart.render_to(self.fenster, (150, 55), "Level Auswahl", (0, 0, 0))
 
         pygame.display.flip()
-        while not self.spiel.gewonnen and self.läuft:
+        while self.läuft:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.läuft = False
