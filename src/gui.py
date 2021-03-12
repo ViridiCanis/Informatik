@@ -15,6 +15,7 @@ class GUI:
 
         self.schriftart = pygame.freetype.SysFont('Consolas', 18, True)
         self.big_schriftart = pygame.freetype.SysFont('Consolas', 50, True)
+        self.tiny_schriftart = pygame.freetype.SysFont('Consolas', 12, True)
         self.reset_button = pygame.Surface((95, 20))
         self.reset_button.fill((50, 50, 50))
         self.next_button = pygame.Surface((160, 20))
@@ -29,12 +30,12 @@ class GUI:
         self.wand_bild = pygame.image.load("images/wand.png")
         self.weg_bild = pygame.image.load("images/weg.png")
         self.ziel_bild = pygame.image.load("images/Ziel.png")
+        self.wasser_bild = pygame.image.load("images/Wasser.png")
         #self.win_bild =  pygame.image.load("images/victory.png")
         #self.lose_bild = pygame.image.load("images/lose.png")
         self.spiel = Spiel()
 
-        self.next = "level"
-        self.lade_level(1)
+        self.next = "menu"
         while self.next != "exit":
             if self.next == "level":
                 self.spielloop()
@@ -65,6 +66,8 @@ class GUI:
         self.ziel_feld = pygame.transform.scale(self.ziel_bild, 
                             (self.feldgröße-1, self.feldgröße-1))
         self.weg_feld = pygame.transform.scale(self.weg_bild, 
+                            (self.feldgröße-1, self.feldgröße-1))
+        self.wasser_feld = pygame.transform.scale(self.wasser_bild,
                             (self.feldgröße-1, self.feldgröße-1))
         self.spiel.spieler.image = pygame.transform.scale(self.spiel.spieler.image, 
                                         (self.feldgröße-1, self.feldgröße-1))
@@ -108,13 +111,20 @@ class GUI:
                 elif self.spiel.level[y][x] == "Ziel":
                     self.fenster.blit(self.ziel_feld, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
+                elif self.spiel.level[y][x] == "Wasser":
+                    self.fenster.blit(self.wasser_feld, 
+                                        (x*self.feldgröße+1, y*self.feldgröße+1))
                 else:
                     self.fenster.blit(self.spiel.level[y][x].image, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
                     if isinstance(self.spiel.level[y][x], Gegner):
-                        self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].id), (0, 0, 0))
-                        self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+16), str(self.spiel.level[y][x].hp), (0, 200, 0))
-                        self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+31), str(self.spiel.level[y][x].atk), (255, 0, 0))
+                        if self.feldgröße > 40:
+                            self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].hp), (0, 50, 0))
+                            self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+16), str(self.spiel.level[y][x].atk), (230, 0, 0))
+                        else:
+                            self.tiny_schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].hp), (0, 50, 0))
+                            self.tiny_schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+12), str(self.spiel.level[y][x].atk), (230, 0, 0))
+
 
         self.fenster.blit(self.spiel.spieler.image, 
                             (self.spiel.spieler.x*self.feldgröße+1, 
@@ -123,13 +133,15 @@ class GUI:
     def mal_level_begrenzt(self):
         s_x, s_y = self.spiel.spieler.x, self.spiel.spieler.y
         br, hö = self.spiel.breite, self.spiel.höhe
-        felder = [
-            (s_x, s_y),
-            ((s_x-1)%br, s_y),
-            ((s_x+1)%br, s_y),
-            (s_x, (s_y-1)%hö),
-            (s_x, (s_y+1)%hö)
-        ] + self.ziele
+        # horizontal
+        felder = [((s_x+i)%br, s_y) for i in range(-2, 3)]
+        # vertikal
+        felder += [(s_x, (s_y+i)%hö) for i in range(-2, 3)]
+        # diagonal
+        felder += [((s_x+i)%br, (s_y+j)%br) for i in range(-1, 2) for j in range(-1, 2)]
+        #felder += self.ziele
+        felder = [e for e in felder if e != (s_x, s_y)]
+        felder.append((s_x, s_y))
         
         for feld in felder:
             # +1 zum Zentrieren im Feld, damit die Gitterlinien sichtbar bleiben
@@ -143,6 +155,9 @@ class GUI:
             elif self.spiel.level[y][x] == "Ziel":
                 self.fenster.blit(self.ziel_feld, 
                                     (x*self.feldgröße+1, y*self.feldgröße+1))
+            elif self.spiel.level[y][x] == "Wasser":
+                    self.fenster.blit(self.wasser_feld, 
+                                        (x*self.feldgröße+1, y*self.feldgröße+1))
             else:
                 self.fenster.blit(self.spiel.level[y][x].image, 
                                     (x*self.feldgröße+1, y*self.feldgröße+1))
@@ -158,16 +173,16 @@ class GUI:
     def menu(self):
         self.läuft = True
 
-        self.fenster.fill((255, 255, 255))
-
-        # buttons
-        self.lvlsel_rect = self.fenster.blit(self.lvlsel_button, (50, 120))
-        self.schriftart.render_to(self.fenster, (55, 125), "Level Auswahl", (255, 255, 255))
-
-        self.big_schriftart.render_to(self.fenster, (50, 55), "SUPER SPIEL", (0, 0, 0))
-
-        pygame.display.flip()
         while self.läuft:
+            self.fenster.fill((255, 255, 255))
+
+            # buttons
+            self.lvlsel_rect = self.fenster.blit(self.lvlsel_button, (50, 120))
+            self.schriftart.render_to(self.fenster, (55, 125), "Level Auswahl", (255, 255, 255))
+
+            self.big_schriftart.render_to(self.fenster, (50, 55), "LABYRINTH", (0, 0, 0))
+
+            pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.läuft = False
@@ -178,21 +193,53 @@ class GUI:
                         self.läuft = False
                         self.next = "levelselect"
 
-    
     def levelselect(self):
         self.läuft = True
 
-        self.fenster.fill((255, 255, 255))
-
-        self.fenster.fill((200, 200, 200), rect=pygame.Rect((100, 150), (700, 430)))
-        # buttons
-        self.menu_rect = self.fenster.blit(self.menu_button, (50, 630))
-        self.schriftart.render_to(self.fenster, (55, 635), "menu", (255, 255, 255))
-
-        self.big_schriftart.render_to(self.fenster, (150, 55), "Level Auswahl", (0, 0, 0))
-
-        pygame.display.flip()
         while self.läuft:
+            self.fenster.fill((255, 255, 255))
+
+            # buttons
+            self.menu_rect = self.fenster.blit(self.menu_button, (50, 630))
+            self.schriftart.render_to(self.fenster, (55, 635), "menu", (255, 255, 255))
+
+            self.big_schriftart.render_to(self.fenster, (150, 55), "Level Auswahl", (0, 0, 0))
+
+            self.fenster.fill((200, 200, 200), rect=pygame.Rect((100, 150), (700, 430)))
+
+
+            button_size = 100
+            gap = 10
+            columns = (700 - gap*2) // (button_size + gap)
+            levels = []
+            for i in range(self.spiel.letztes_level_impl):
+                self.big_schriftart.render_to(self.fenster, 
+                    (150+(button_size+gap)*(i%columns), 
+                    190+(button_size+gap)*(i//columns)), 
+                    str(i+1), (255, 255, 255)
+                )
+                self.big_schriftart.render_to(self.fenster, 
+                    (150+(button_size+gap)*(i%columns), 
+                    190+(button_size+gap)*(i//columns)), 
+                    str(i+1), (255, 255, 255)
+                )
+                levels.append(pygame.Rect(
+                    (110+(button_size+gap)*(i%columns), 
+                    160+(button_size+gap)*(i//columns)), 
+                    (button_size, button_size)))
+                self.fenster.fill((50, 50, 50), rect=levels[i])
+                self.big_schriftart.render_to(self.fenster, 
+                    (150+(button_size+gap)*(i%columns), 
+                    190+(button_size+gap)*(i//columns)), 
+                    str(i+1), (255, 255, 255)
+                )
+                self.big_schriftart.render_to(self.fenster, 
+                    (150+(button_size+gap)*(i%columns), 
+                    190+(button_size+gap)*(i//columns)), 
+                    str(i+1), (255, 255, 255)
+                )
+
+            pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.läuft = False
@@ -202,6 +249,13 @@ class GUI:
                     if self.menu_rect.collidepoint(pos):
                         self.läuft = False
                         self.next = "menu"
+                    else:
+                        for i in range(self.spiel.letztes_level_impl):
+                            if levels[i].collidepoint(pos):
+                                self.läuft = False
+                                self.next = "level"
+                                self.lade_level(i+1)
+                                break
 
     def update_gegner(self):
         gegner = []
@@ -214,7 +268,8 @@ class GUI:
             geg.update()
 
     def spielloop(self):
-        self.läuft = True     
+        self.läuft = True
+        self.spiel.spieler.update("")
         while not self.spiel.gewonnen and self.läuft:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -252,6 +307,9 @@ class GUI:
             if self.spiel.spieler.bewegung_in_runde == 0:
                 self.big_schriftart.render_to(self.fenster, (100, 100), "keine", (255, 200, 200))
                 self.big_schriftart.render_to(self.fenster, (100, 150), "Züge übrig", (255, 200, 200))
+            elif self.spiel.spieler.hp < 1:
+                self.big_schriftart.render_to(self.fenster, (100, 100), "keine", (255, 200, 200))
+                self.big_schriftart.render_to(self.fenster, (100, 150), "Leben übrig", (255, 200, 200))
 
             # buttons
             self.reset_rect = self.fenster.blit(self.reset_button, (710, 50))
@@ -259,38 +317,40 @@ class GUI:
             self.menu_rect = self.fenster.blit(self.menu_button, (710, 630))
             self.schriftart.render_to(self.fenster, (715, 635), "menu", (255, 255, 255))
 
-            self.schriftart.render_to(self.fenster, (715, 75), 
-                "Züge übrig: " + str(self.spiel.spieler.bewegung_in_runde), (255, 0, 0))
+            self.schriftart.render_to(self.fenster, (715, 75),
+                "akt. LVL: " + str(self.spiel.letztes_level), (0, 0, 0))
             self.schriftart.render_to(self.fenster, (715, 90),
-                "HP: " + str(self.spiel.spieler.hp), (255, 0, 0))
+                "HP: " + str(self.spiel.spieler.hp), (0, 0, 0))
             self.schriftart.render_to(self.fenster, (715, 105),
-                "ATK: " + str(self.spiel.spieler.atk), (255, 0, 0))
+                "ATK: " + str(self.spiel.spieler.atk), (0, 0, 0))
+            self.schriftart.render_to(self.fenster, (715, 120), 
+                "Züge übrig: " + str(self.spiel.spieler.bewegung_in_runde), (0, 0, 0))
 
             pygame.display.flip()
         
-        self.fenster.fill((255, 255, 255))
-
-        # win-menu über restliches Interface malen
-        pygame.draw.rect(self.fenster, (0, 0, 0, 50), pygame.Rect(0, 0, 700, 700))
-
-        self.schriftart.render_to(self.fenster, (250, 300), "Level geschafft", (255, 255, 255))
-
-        # buttons
-        if self.spiel.letztes_level < self.spiel.letztes_level_impl:
-            self.next_rect = self.fenster.blit(self.next_button, (170, 400))
-            self.schriftart.render_to(self.fenster, (175, 405), "Nächstes Level", (255, 255, 255))
-            self.reset_rect = self.fenster.blit(self.reset_button, (380, 400))
-            self.schriftart.render_to(self.fenster, (385, 405), "neustart", (255, 255, 255))
-        else:
-            self.reset_rect = self.fenster.blit(self.reset_button, (290, 400))
-            self.schriftart.render_to(self.fenster, (295, 405), "neustart", (255, 255, 255))
-
-        self.menu_rect = self.fenster.blit(self.menu_button, (290, 450))
-        self.schriftart.render_to(self.fenster, (295, 455), "menu", (255, 255, 255))
-
-        pygame.display.flip()
-
         while self.läuft: # gewonnen und wartet auf Interaktion
+            self.fenster.fill((255, 255, 255))
+
+            # win-menu über restliches Interface malen
+            pygame.draw.rect(self.fenster, (0, 0, 0, 50), pygame.Rect(0, 0, 700, 700))
+
+            self.schriftart.render_to(self.fenster, (250, 300), "Level geschafft", (255, 255, 255))
+
+            # buttons
+            if self.spiel.letztes_level < self.spiel.letztes_level_impl:
+                self.next_rect = self.fenster.blit(self.next_button, (170, 400))
+                self.schriftart.render_to(self.fenster, (175, 405), "Nächstes Level", (255, 255, 255))
+                self.reset_rect = self.fenster.blit(self.reset_button, (380, 400))
+                self.schriftart.render_to(self.fenster, (385, 405), "neustart", (255, 255, 255))
+            else:
+                self.reset_rect = self.fenster.blit(self.reset_button, (290, 400))
+                self.schriftart.render_to(self.fenster, (295, 405), "neustart", (255, 255, 255))
+
+            self.menu_rect = self.fenster.blit(self.menu_button, (290, 450))
+            self.schriftart.render_to(self.fenster, (295, 455), "menu", (255, 255, 255))
+
+            pygame.display.flip()
+
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.läuft = False

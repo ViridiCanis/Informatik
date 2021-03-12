@@ -11,7 +11,7 @@ class Spiel:
         self.gewonnen = False
         self.spieler = ""
         self.letztes_level = 0
-        self.letztes_level_impl = 5
+        self.letztes_level_impl = 10
 
     def lade_level(self, level):
         self.gewonnen = False
@@ -39,6 +39,8 @@ class Spiel:
                 elif level[y][x] == "G":
                     zeile.append(Gegner(x, y, self, id=gid))
                     gid += 1
+                elif level[y][x] == "w":
+                    zeile.append("Wasser")
                 else:
                     zeile.append("")
             self.level.append(zeile)
