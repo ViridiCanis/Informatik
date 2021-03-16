@@ -2,6 +2,7 @@ from spieler import Spieler
 from gegner import Gegner
 from objekt import Objekt
 import pygame
+import powerups
 
 class Spiel:
     def __init__(self):
@@ -11,7 +12,7 @@ class Spiel:
         self.gewonnen = False
         self.spieler = ""
         self.letztes_level = 0
-        self.letztes_level_impl = 10
+        self.letztes_level_impl = 13
 
     def lade_level(self, level):
         self.gewonnen = False
@@ -41,6 +42,14 @@ class Spiel:
                     gid += 1
                 elif level[y][x] == "w":
                     zeile.append("Wasser")
+                elif level[y][x] == "b":
+                    zeile.append("BlockLeiter")
+                elif level[y][x] == "H":
+                    zeile.append(powerups.Heal((x, y), self))
+                elif level[y][x] == "P":
+                    zeile.append(powerups.Poison((x, y), self))
+                #elif level[y][x] == "A":
+                #    zeile.append(powerups.Attack((x, y), self))
                 else:
                     zeile.append("")
             self.level.append(zeile)

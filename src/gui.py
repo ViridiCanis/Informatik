@@ -5,6 +5,7 @@ from pygame.locals import *
 
 from logik import Spiel
 from gegner import Gegner
+from powerups import Powerup
 
 class GUI:
     def __init__(self):
@@ -31,6 +32,7 @@ class GUI:
         self.weg_bild = pygame.image.load("images/weg.png")
         self.ziel_bild = pygame.image.load("images/Ziel.png")
         self.wasser_bild = pygame.image.load("images/Wasser.png")
+        self.blockLeiter_bild = pygame.image.load("images/BlockLeiter.png")
         #self.win_bild =  pygame.image.load("images/victory.png")
         #self.lose_bild = pygame.image.load("images/lose.png")
         self.spiel = Spiel()
@@ -68,6 +70,8 @@ class GUI:
         self.weg_feld = pygame.transform.scale(self.weg_bild, 
                             (self.feldgröße-1, self.feldgröße-1))
         self.wasser_feld = pygame.transform.scale(self.wasser_bild,
+                            (self.feldgröße-1, self.feldgröße-1))
+        self.blockLeiter_feld = pygame.transform.scale(self.blockLeiter_bild,
                             (self.feldgröße-1, self.feldgröße-1))
         self.spiel.spieler.image = pygame.transform.scale(self.spiel.spieler.image, 
                                         (self.feldgröße-1, self.feldgröße-1))
@@ -114,16 +118,14 @@ class GUI:
                 elif self.spiel.level[y][x] == "Wasser":
                     self.fenster.blit(self.wasser_feld, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
+                elif self.spiel.level[y][x] == "BlockLeiter":
+                    self.fenster.blit(self.blockLeiter_feld, 
+                                        (x*self.feldgröße+1, y*self.feldgröße+1))
                 else:
                     self.fenster.blit(self.spiel.level[y][x].image, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
                     if isinstance(self.spiel.level[y][x], Gegner):
-                        if self.feldgröße > 40:
-                            self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].hp), (0, 50, 0))
-                            self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+16), str(self.spiel.level[y][x].atk), (230, 0, 0))
-                        else:
-                            self.tiny_schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].hp), (0, 50, 0))
-                            self.tiny_schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+12), str(self.spiel.level[y][x].atk), (230, 0, 0))
+                        self.mal_gegner_stats(x, y)
 
 
         self.fenster.blit(self.spiel.spieler.image, 
@@ -158,17 +160,26 @@ class GUI:
             elif self.spiel.level[y][x] == "Wasser":
                     self.fenster.blit(self.wasser_feld, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
+            elif self.spiel.level[y][x] == "BlockLeiter":
+                    self.fenster.blit(self.blockLeiter_feld, 
+                                       (x*self.feldgröße+1, y*self.feldgröße+1))
             else:
                 self.fenster.blit(self.spiel.level[y][x].image, 
                                     (x*self.feldgröße+1, y*self.feldgröße+1))
                 if isinstance(self.spiel.level[y][x], Gegner):
-                    self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].id), (0, 0, 0))
-                    self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+16), str(self.spiel.level[y][x].hp), (0, 200, 0))
-                    self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+31), str(self.spiel.level[y][x].atk), (255, 0, 0))
+                    self.mal_gegner_stats(x, y)
 
         self.fenster.blit(self.spiel.spieler.image, 
                             (self.spiel.spieler.x*self.feldgröße+1, 
                              self.spiel.spieler.y*self.feldgröße+1))
+    
+    def mal_gegner_stats(self, x, y):
+        if self.feldgröße > 40:
+            self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].hp), (0, 70, 0))
+            self.schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+16), str(self.spiel.level[y][x].atk), (230, 0, 0))
+        else:
+            self.tiny_schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+1), str(self.spiel.level[y][x].hp), (0, 70, 0))
+            self.tiny_schriftart.render_to(self.fenster, (x*self.feldgröße+1, y*self.feldgröße+12), str(self.spiel.level[y][x].atk), (230, 0, 0))
 
     def menu(self):
         self.läuft = True
@@ -257,15 +268,15 @@ class GUI:
                                 self.lade_level(i+1)
                                 break
 
-    def update_gegner(self):
-        gegner = []
+    def update_obj(self):
+        objekte = []
         for y in range(self.spiel.höhe):
             for x in range(self.spiel.breite):
-                if isinstance(self.spiel.level[y][x], Gegner):
-                    gegner.append(self.spiel.level[y][x])
+                if isinstance(self.spiel.level[y][x], Gegner) or isinstance(self.spiel.level[y][x], Powerup):
+                    objekte.append(self.spiel.level[y][x])
             
-        for geg in gegner:
-            geg.update()
+        for obj in objekte:
+            obj.update()
 
     def spielloop(self):
         self.läuft = True
@@ -278,16 +289,16 @@ class GUI:
                 elif e.type == KEYDOWN:
                     if e.key == K_w or e.key == K_UP:
                         self.spiel.spieler.update("^")
-                        self.update_gegner()
+                        self.update_obj()
                     elif e.key == K_a or e.key == K_LEFT:
                         self.spiel.spieler.update("<")
-                        self.update_gegner()
+                        self.update_obj()
                     elif e.key == K_s or e.key == K_DOWN:
                         self.spiel.spieler.update("v")
-                        self.update_gegner()
+                        self.update_obj()
                     elif e.key == K_d or e.key == K_RIGHT:
                         self.spiel.spieler.update(">")
-                        self.update_gegner()
+                        self.update_obj()
                 elif e.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
                     pos = pygame.mouse.get_pos()
                     if self.reset_rect.collidepoint(pos):
