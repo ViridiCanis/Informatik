@@ -12,7 +12,7 @@ class Spiel:
         self.gewonnen = False
         self.spieler = ""
         self.letztes_level = 0
-        self.letztes_level_impl = 13
+        self.letztes_level_impl = 16
 
     def lade_level(self, level):
         self.gewonnen = False

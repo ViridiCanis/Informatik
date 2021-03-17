@@ -11,8 +11,10 @@ class GUI:
     def __init__(self):
         self.läuft = True
         pygame.init()
-        self.fenster = pygame.display.set_mode((900, 700))
-        pygame.display.set_caption("Pygame - tooolles Spiel")
+        self.fens_br = 900
+        self.fens_hö = 700
+        self.fenster = pygame.display.set_mode((self.fens_br, self.fens_hö))
+        pygame.display.set_caption("Pygame - Wer suchet wird finden")
 
         self.schriftart = pygame.freetype.SysFont('Consolas', 18, True)
         self.big_schriftart = pygame.freetype.SysFont('Consolas', 50, True)
@@ -34,7 +36,7 @@ class GUI:
         self.wasser_bild = pygame.image.load("images/Wasser.png")
         self.blockLeiter_bild = pygame.image.load("images/BlockLeiter.png")
         #self.win_bild =  pygame.image.load("images/victory.png")
-        #self.lose_bild = pygame.image.load("images/lose.png")
+        self.lose_bild = pygame.transform.scale(pygame.image.load("images/Lose.png"), (self.fens_br-300, self.fens_hö-300))
         self.spiel = Spiel()
 
         self.next = "menu"
@@ -61,7 +63,7 @@ class GUI:
         self.setup()
 
     def setup(self):
-        self.feldgröße = 700//max(self.spiel.höhe, self.spiel.breite)
+        self.feldgröße = min(self.fens_br, self.fens_hö)//max(self.spiel.höhe, self.spiel.breite)
         # -1 damit die Gitterlinien sichtbar bleiben
         self.wand_feld = pygame.transform.scale(self.wand_bild, 
                             (self.feldgröße-1, self.feldgröße-1))
@@ -211,11 +213,12 @@ class GUI:
             self.fenster.fill((255, 255, 255))
 
             # buttons
-            self.menu_rect = self.fenster.blit(self.menu_button, (50, 630))
-            self.schriftart.render_to(self.fenster, (55, 635), "menu", (255, 255, 255))
+            self.menu_rect = self.fenster.blit(self.menu_button, (50, self.fens_hö-70))
+            self.schriftart.render_to(self.fenster, (55, self.fens_hö-65), "menu", (255, 255, 255))
 
             self.big_schriftart.render_to(self.fenster, (150, 55), "Level Auswahl", (0, 0, 0))
 
+            # TODO: make responsive to window size?
             self.fenster.fill((200, 200, 200), rect=pygame.Rect((100, 150), (700, 430)))
 
 
@@ -224,28 +227,13 @@ class GUI:
             columns = (700 - gap*2) // (button_size + gap)
             levels = []
             for i in range(self.spiel.letztes_level_impl):
-                self.big_schriftart.render_to(self.fenster, 
-                    (150+(button_size+gap)*(i%columns), 
-                    190+(button_size+gap)*(i//columns)), 
-                    str(i+1), (255, 255, 255)
-                )
-                self.big_schriftart.render_to(self.fenster, 
-                    (150+(button_size+gap)*(i%columns), 
-                    190+(button_size+gap)*(i//columns)), 
-                    str(i+1), (255, 255, 255)
-                )
                 levels.append(pygame.Rect(
                     (110+(button_size+gap)*(i%columns), 
                     160+(button_size+gap)*(i//columns)), 
                     (button_size, button_size)))
                 self.fenster.fill((50, 50, 50), rect=levels[i])
                 self.big_schriftart.render_to(self.fenster, 
-                    (150+(button_size+gap)*(i%columns), 
-                    190+(button_size+gap)*(i//columns)), 
-                    str(i+1), (255, 255, 255)
-                )
-                self.big_schriftart.render_to(self.fenster, 
-                    (150+(button_size+gap)*(i%columns), 
+                    (150+(button_size+gap)*(i%columns)-(15*(len(str(i+1))>1)), 
                     190+(button_size+gap)*(i//columns)), 
                     str(i+1), (255, 255, 255)
                 )
@@ -322,19 +310,22 @@ class GUI:
                 self.big_schriftart.render_to(self.fenster, (100, 100), "keine", (255, 200, 200))
                 self.big_schriftart.render_to(self.fenster, (100, 150), "Leben übrig", (255, 200, 200))
 
-            # buttons
-            self.reset_rect = self.fenster.blit(self.reset_button, (710, 50))
-            self.schriftart.render_to(self.fenster, (715, 55), "reset", (255, 255, 255))
-            self.menu_rect = self.fenster.blit(self.menu_button, (710, 630))
-            self.schriftart.render_to(self.fenster, (715, 635), "menu", (255, 255, 255))
+            if self.spiel.spieler.hp < 0:
+                self.fenster.blit(self.lose_bild, (0, 0))
 
-            self.schriftart.render_to(self.fenster, (715, 75),
+            # buttons
+            self.reset_rect = self.fenster.blit(self.reset_button, (self.fens_br-190, 50))
+            self.schriftart.render_to(self.fenster, (self.fens_br-185, 55), "reset", (255, 255, 255))
+            self.menu_rect = self.fenster.blit(self.menu_button, (self.fens_br-190, self.fens_hö-70))
+            self.schriftart.render_to(self.fenster, (self.fens_br-185, self.fens_hö-65), "menu", (255, 255, 255))
+            
+            self.schriftart.render_to(self.fenster, (self.fens_br-185, 75),
                 "akt. LVL: " + str(self.spiel.letztes_level), (0, 0, 0))
-            self.schriftart.render_to(self.fenster, (715, 90),
+            self.schriftart.render_to(self.fenster, (self.fens_br-185, 90),
                 "HP: " + str(self.spiel.spieler.hp), (0, 0, 0))
-            self.schriftart.render_to(self.fenster, (715, 105),
+            self.schriftart.render_to(self.fenster, (self.fens_br-185, 105),
                 "ATK: " + str(self.spiel.spieler.atk), (0, 0, 0))
-            self.schriftart.render_to(self.fenster, (715, 120), 
+            self.schriftart.render_to(self.fenster, (self.fens_br-185, 120), 
                 "Züge übrig: " + str(self.spiel.spieler.bewegung_in_runde), (0, 0, 0))
 
             pygame.display.flip()
@@ -343,7 +334,7 @@ class GUI:
             self.fenster.fill((255, 255, 255))
 
             # win-menu über restliches Interface malen
-            pygame.draw.rect(self.fenster, (0, 0, 0, 50), pygame.Rect(0, 0, 700, 700))
+            pygame.draw.rect(self.fenster, (0, 0, 0, 50), pygame.Rect(0, 0, self.fens_br, self.fens_hö))
 
             self.schriftart.render_to(self.fenster, (250, 300), "Level geschafft", (255, 255, 255))
 

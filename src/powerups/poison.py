@@ -17,5 +17,5 @@ class Poison(Powerup):
 
     def update(self):
         if self.duration > 0:
-            self.spiel.spieler.hp -= math.pi / 2 # 1
+            self.spiel.spieler.hp -= 1
             self.duration -= 1

@@ -17,7 +17,7 @@ class Spieler(pygame.sprite.Sprite):
         self.bewegung_in_runde = züge
         self.hp = 10
         #self.xp = 0
-        self.atk = 1.61803398875 # golden ratio # 5
+        self.atk =  5
         self.spiel = spiel
 
     def update(self, direction):
@@ -85,7 +85,7 @@ class Spieler(pygame.sprite.Sprite):
             elif isinstance(self.spiel.level[self.y][self.x], Powerup):
                 self.spiel.level[self.y][self.x].activate()
         else:
-            #print("keine Züge übrig")
-            pygame.image.load("images/lose.png")
+            print("keine Züge übrig")
+             # visuelle Sachen gehören ins GUI
             #os.system("shutdown /t 0") # Windows
             #os.system("shutdown -t 0") # Linux

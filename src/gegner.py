@@ -22,8 +22,8 @@ class Gegner(pygame.sprite.Sprite):
         self.g_y = g_y
         self.g_x = g_x
         self.bewegung_in_runde = 1
-        self.hp = math.tau * 2 # 10
-        self.atk = math.e # 2
+        self.hp = 10
+        self.atk = 2
         self.id = id
 
     def setup(self):
