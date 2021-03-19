@@ -11,19 +11,25 @@ class Gegner(pygame.sprite.Sprite):
         self,
         g_x,
         g_y,
+        hp,
+        atk,
         spiel,
+        boss = False,
         id = 0
     ):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("images/gegner2.png")
+        if boss:
+            self.image = pygame.image.load("images/gegner.png")
+        else:
+            self.image = pygame.image.load("images/gegner2.png")
         self.spiel = spiel
 
         #gegnerkoords
         self.g_y = g_y
         self.g_x = g_x
         self.bewegung_in_runde = 1
-        self.hp = 10
-        self.atk = 2
+        self.hp = hp
+        self.atk = atk
         self.id = id
 
     def setup(self):

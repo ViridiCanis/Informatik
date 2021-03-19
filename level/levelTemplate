@@ -2,3 +2,13 @@ breite höhe züge begrenzteSicht(0 or 1)
 0 0 0 0 0 ...
 0 0 0 0 0 ...
 ...
+W = Wand
+0 = leer/Weg
+w = Wasser
+S = Spieler
+Z = Ziel
+G = Gegner
+A = Angriff
+H = Health
+P = Gift
+b = Blockleiter(man kann über dieses Feld gehen)

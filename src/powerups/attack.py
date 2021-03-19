@@ -11,7 +11,7 @@ class Attack(Powerup):
         pass
 
     def activate(self):
-        self.spiel.spieler.atk += 3
+        self.spiel.spieler.atk += 5
         self.spiel.level[self.pos[1]][self.pos[0]] = ""
 
     def update(self):

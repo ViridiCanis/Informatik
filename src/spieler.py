@@ -4,7 +4,6 @@ from pygame.locals import *
 import random
 import threading
 from gegner import Gegner
-import os
 from powerups import Powerup
 
 
@@ -84,8 +83,3 @@ class Spieler(pygame.sprite.Sprite):
                 self.spiel.gewonnen = True
             elif isinstance(self.spiel.level[self.y][self.x], Powerup):
                 self.spiel.level[self.y][self.x].activate()
-        else:
-            print("keine Züge übrig")
-             # visuelle Sachen gehören ins GUI
-            #os.system("shutdown /t 0") # Windows
-            #os.system("shutdown -t 0") # Linux

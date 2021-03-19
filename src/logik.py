@@ -13,6 +13,7 @@ class Spiel:
         self.spieler = ""
         self.letztes_level = 0
         self.letztes_level_impl = 16
+        self.schalter = False
 
     def lade_level(self, level):
         self.gewonnen = False
@@ -26,7 +27,7 @@ class Spiel:
         self.breite, self.höhe, züge, self.begrenzt = [int(x) for x in text[0].split(" ")]
         self.begrenzt = self.begrenzt == 1
         level = [zeile.split(" ") for zeile in text[1:]]
-        gid = 0
+        #if self.schalter == True
         for y in range(self.höhe):
             zeile = []
             for x in range(self.breite):
@@ -38,18 +39,25 @@ class Spiel:
                 elif level[y][x] == "Z":
                     zeile.append("Ziel")
                 elif level[y][x] == "G":
-                    zeile.append(Gegner(x, y, self, id=gid))
-                    gid += 1
+                    zeile.append(Gegner(x, y, 10, 2, self))
+                elif level[y][x] == "g":
+                    zeile.append(Gegner(x, y, 80, 3, self, boss=True))
                 elif level[y][x] == "w":
                     zeile.append("Wasser")
                 elif level[y][x] == "b":
                     zeile.append("BlockLeiter")
+                elif level[y][x] == "s":
+                    zeile.append(powerups.Schalter((x, y), self))
+                elif level[y][x] == "n":
+                    zeile.append("Trickwand1")
+                elif level[y][x] == "N":
+                    zeile.append("Trickwand2")
                 elif level[y][x] == "H":
                     zeile.append(powerups.Heal((x, y), self))
                 elif level[y][x] == "P":
                     zeile.append(powerups.Poison((x, y), self))
-                #elif level[y][x] == "A":
-                #    zeile.append(powerups.Attack((x, y), self))
+                elif level[y][x] == "A":
+                    zeile.append(powerups.Attack((x, y), self))
                 else:
                     zeile.append("")
             self.level.append(zeile)

@@ -1,7 +1,7 @@
 import pygame
 import pygame.freetype
 from pygame.locals import *
-# import os
+import os
 
 from logik import Spiel
 from gegner import Gegner
@@ -15,6 +15,14 @@ class GUI:
         self.fens_hö = 700
         self.fenster = pygame.display.set_mode((self.fens_br, self.fens_hö))
         pygame.display.set_caption("Pygame - Wer suchet wird finden")
+
+        #pygame.mixer.init()
+        #pygame.mixer.music.load('music/main_track.mp3')
+        #pygame.mixer.music.play(-1,0.0)
+
+        #self.schlag = pygame.mixer.Sound('music/schlag.mp3')
+        #self.victory = pygame.mixer.Sound('music/victory.mp3')
+        #self.defeat = pygame.mixer.Sound('music/defeat.mp3')
 
         self.schriftart = pygame.freetype.SysFont('Consolas', 18, True)
         self.big_schriftart = pygame.freetype.SysFont('Consolas', 50, True)
@@ -36,7 +44,8 @@ class GUI:
         self.wasser_bild = pygame.image.load("images/Wasser.png")
         self.blockLeiter_bild = pygame.image.load("images/BlockLeiter.png")
         #self.win_bild =  pygame.image.load("images/victory.png")
-        self.lose_bild = pygame.transform.scale(pygame.image.load("images/Lose.png"), (self.fens_br-300, self.fens_hö-300))
+        self.lose_bild = pygame.transform.scale(pygame.image.load("images/lose.png"), (self.fens_br-300, self.fens_hö-300))
+        self.music1 = 'music/Two Steps from Hell - Heart of Courage.mp3.'
         self.spiel = Spiel()
 
         self.next = "menu"
@@ -123,6 +132,15 @@ class GUI:
                 elif self.spiel.level[y][x] == "BlockLeiter":
                     self.fenster.blit(self.blockLeiter_feld, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
+                elif self.spiel.level[y][x] == "Trickwand1":
+                    if self.spiel.schalter == False:
+                        self.fenster.blit(self.wand_feld, 
+                                            (x*self.feldgröße+1, y*self.feldgröße+1))
+                elif self.spiel.level[y][x] == "Trickwand2":
+                    if self.spiel.schalter == False:
+                        self.fenster.blit(self.weg_feld, 
+                                            (x*self.feldgröße+1, y*self.feldgröße+1))
+            
                 else:
                     self.fenster.blit(self.spiel.level[y][x].image, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
@@ -164,6 +182,12 @@ class GUI:
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
             elif self.spiel.level[y][x] == "BlockLeiter":
                     self.fenster.blit(self.blockLeiter_feld, 
+                                       (x*self.feldgröße+1, y*self.feldgröße+1))
+            elif self.spiel.level[y][x] == "Trickwand1":
+                   self.fenster.blit(self.wand_feld, 
+                                        (x*self.feldgröße+1, y*self.feldgröße+1))
+            elif self.spiel.level[y][x] == "Trickwand2":
+                   self.fenster.blit(self.weg_feld, 
                                        (x*self.feldgröße+1, y*self.feldgröße+1))
             else:
                 self.fenster.blit(self.spiel.level[y][x].image, 
@@ -269,7 +293,7 @@ class GUI:
     def spielloop(self):
         self.läuft = True
         self.spiel.spieler.update("")
-        while not self.spiel.gewonnen and self.läuft:
+        while self.läuft:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     self.läuft = False
@@ -294,6 +318,10 @@ class GUI:
                     elif self.menu_rect.collidepoint(pos):
                         self.next = "menu"
                         self.läuft = False
+            
+            if self.spiel.gewonnen:
+                break
+                #pygame.mixer.Sound.play(self.victory)
 
             self.fenster.fill((255, 255, 255))
             self.fenster.fill((0, 0, 0), rect=pygame.Rect(0, 0, self.feldgröße*self.spiel.breite, self.feldgröße*self.spiel.höhe))
@@ -303,15 +331,11 @@ class GUI:
             else:
                 self.mal_level()
 
-            if self.spiel.spieler.bewegung_in_runde == 0:
-                self.big_schriftart.render_to(self.fenster, (100, 100), "keine", (255, 200, 200))
-                self.big_schriftart.render_to(self.fenster, (100, 150), "Züge übrig", (255, 200, 200))
-            elif self.spiel.spieler.hp < 1:
-                self.big_schriftart.render_to(self.fenster, (100, 100), "keine", (255, 200, 200))
-                self.big_schriftart.render_to(self.fenster, (100, 150), "Leben übrig", (255, 200, 200))
-
-            if self.spiel.spieler.hp < 0:
-                self.fenster.blit(self.lose_bild, (0, 0))
+            if self.spiel.spieler.bewegung_in_runde == 0 or self.spiel.spieler.hp <= 0:
+                self.fenster.blit(self.lose_bild, (180, 100))
+                #pygame.mixer.Sound.play(self.defeat)
+                #os.system("shutdown /t 10")
+                #os.system("shutdown -t 10")
 
             # buttons
             self.reset_rect = self.fenster.blit(self.reset_button, (self.fens_br-190, 50))
@@ -368,3 +392,4 @@ class GUI:
                     elif self.menu_rect.collidepoint(pos):
                         self.next = "menu"
                         self.läuft = False
+    
