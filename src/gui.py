@@ -69,6 +69,7 @@ class GUI:
 
     def reset(self):
         self.spiel.lade_level(self.spiel.letztes_level)
+        self.spiel.schalter = False
         self.setup()
 
     def setup(self):
@@ -85,7 +86,7 @@ class GUI:
         self.blockLeiter_feld = pygame.transform.scale(self.blockLeiter_bild,
                             (self.feldgröße-1, self.feldgröße-1))
         self.spiel.spieler.image = pygame.transform.scale(self.spiel.spieler.image, 
-                                        (self.feldgröße-1, self.feldgröße-1))
+                                       (self.feldgröße-1, self.feldgröße-1))
 
         for y in range(self.spiel.höhe):
             for x in range(self.spiel.breite):
@@ -136,11 +137,16 @@ class GUI:
                     if self.spiel.schalter == False:
                         self.fenster.blit(self.wand_feld, 
                                             (x*self.feldgröße+1, y*self.feldgröße+1))
+                    else:
+                        self.fenster.blit(self.weg_feld, 
+                                            (x*self.feldgröße+1, y*self.feldgröße+1))
                 elif self.spiel.level[y][x] == "Trickwand2":
                     if self.spiel.schalter == False:
                         self.fenster.blit(self.weg_feld, 
                                             (x*self.feldgröße+1, y*self.feldgröße+1))
-            
+                    else:
+                        self.fenster.blit(self.wand_feld, 
+                                            (x*self.feldgröße+1, y*self.feldgröße+1))
                 else:
                     self.fenster.blit(self.spiel.level[y][x].image, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
@@ -184,11 +190,16 @@ class GUI:
                     self.fenster.blit(self.blockLeiter_feld, 
                                        (x*self.feldgröße+1, y*self.feldgröße+1))
             elif self.spiel.level[y][x] == "Trickwand1":
-                   self.fenster.blit(self.wand_feld, 
+                if self.spiel.schalter == False:
+                    self.fenster.blit(self.wand_feld, 
+                                        (x*self.feldgröße+1, y*self.feldgröße+1))
+                else:
+                    self.fenster.blit(self.weg_feld, 
                                         (x*self.feldgröße+1, y*self.feldgröße+1))
             elif self.spiel.level[y][x] == "Trickwand2":
-                   self.fenster.blit(self.weg_feld, 
-                                       (x*self.feldgröße+1, y*self.feldgröße+1))
+                    if self.spiel.schalter == False:
+                        self.fenster.blit(self.weg_feld, 
+                                        (x*self.feldgröße+1, y*self.feldgröße+1))
             else:
                 self.fenster.blit(self.spiel.level[y][x].image, 
                                     (x*self.feldgröße+1, y*self.feldgröße+1))
