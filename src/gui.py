@@ -89,7 +89,7 @@ class GUI:
 
         for y in range(self.spiel.höhe):
             for x in range(self.spiel.breite):
-                if not isinstance(self.spiel.level[y][x], str)):
+                if not isinstance(self.spiel.level[y][x], str):
                 # wenn das Feld kein String, sondern ein Objekt beinhält
                     self.spiel.level[y][x].image = pygame.transform.scale(
                                             self.spiel.level[y][x].image, 
