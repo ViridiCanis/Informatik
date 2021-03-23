@@ -5,8 +5,9 @@ import math
 
 
 class Poison(Powerup):
+    bild = pygame.image.load('images/poison.png')
     def __init__(self, pos, spiel):
-        Powerup.__init__(self, pos, spiel, "poison.png")
+        Powerup.__init__(self, pos, spiel, Poison.bild)
         self.duration = 0
 
     def setup(self):

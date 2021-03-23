@@ -6,13 +6,14 @@ import powerups
 
 class Spiel:
     def __init__(self):
+        self.sound = False
         self.level = []
         self.breite = 0
         self.höhe = 0
         self.gewonnen = False
         self.spieler = ""
         self.letztes_level = 0
-        self.letztes_level_impl = 16
+        self.letztes_level_impl = 17
         self.schalter = False
 
     def lade_level(self, level):
@@ -41,7 +42,7 @@ class Spiel:
                 elif level[y][x] == "G":
                     zeile.append(Gegner(x, y, 10, 2, self))
                 elif level[y][x] == "g":
-                    zeile.append(Gegner(x, y, 80, 3, self, boss=True))
+                    zeile.append(Gegner(x, y, 80, 1, self, boss=True))
                 elif level[y][x] == "w":
                     zeile.append("Wasser")
                 elif level[y][x] == "b":

@@ -4,8 +4,9 @@ from powerups import Powerup
 
 
 class Heal(Powerup):
+    bild = pygame.image.load('images/Heal.png')
     def __init__(self, pos, spiel):
-        Powerup.__init__(self, pos, spiel, "Heal.png")
+        Powerup.__init__(self, pos, spiel, Heal.bild)
 
     def setup(self):
         pass

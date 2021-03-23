@@ -1,9 +1,9 @@
 import pygame
 
 class Powerup(pygame.sprite.Sprite):
-    def __init__(self, pos, spiel, bilddatei):
+    def __init__(self, pos, spiel, bild):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("images/{}".format(bilddatei))
+        self.image = bild
         self.spiel = spiel
         self.pos = pos
 

@@ -1,0 +1,21 @@
+20 20 200 1
+W W W W W W W W W W W W W W W W W n W W
+W s W P 0 0 0 0 w 0 0 0 0 0 0 0 0 0 G W
+W 0 n 0 0 P P 0 w 0 0 0 0 0 0 0 0 0 0 W
+W N W W W W W W W W W W W W W W W w w W
+W 0 W H H H P N 0 0 0 0 0 P 0 0 0 0 0 W
+W 0 W H A H P N 0 0 P P 0 0 0 P 0 0 0 W
+W 0 W H H H 0 N 0 0 W W W W W W W W W W
+W 0 W G 0 0 0 N 0 P W 0 0 0 0 0 0 0 s W
+W 0 W N N N N N 0 0 N 0 H 0 W W W N N W
+W 0 W 0 0 P 0 P 0 0 W 0 0 0 W 0 0 w w W
+W 0 W 0 0 0 0 0 0 0 W 0 0 0 W 0 0 0 0 W 
+W 0 W 0 0 W W W W W W 0 0 0 W 0 w 0 0 W
+W 0 W 0 0 0 0 0 0 n 0 0 0 0 W 0 g G 0 W
+W 0 W 0 0 0 0 0 0 n 0 0 0 0 W w w 0 0 W
+W 0 W W W W W W W W W W W W W 0 0 0 w W
+W 0 W G 0 0 0 0 0 0 0 0 0 0 w 0 0 0 s W
+W 0 W W W W W W W W W n W W W W W W W W
+W 0 0 0 0 0 P 0 0 0 P 0 0 0 P n 0 0 Z W
+W S 0 0 P 0 0 0 P 0 0 0 P 0 0 n 0 N Z W
+W W W W W W W W W W W W W W W W W 0 W W

@@ -7,6 +7,8 @@ import math
 
 
 class Gegner(pygame.sprite.Sprite):
+    bild = pygame.image.load('images/gegner.png')
+    bild2 = pygame.image.load('images/gegner2.png')
     def __init__(
         self,
         g_x,
@@ -18,11 +20,12 @@ class Gegner(pygame.sprite.Sprite):
         id = 0
     ):
         pygame.sprite.Sprite.__init__(self)
-        if boss:
-            self.image = pygame.image.load("images/gegner.png")
-        else:
-            self.image = pygame.image.load("images/gegner2.png")
         self.spiel = spiel
+
+        if boss:
+            self.image = Gegner.bild
+        else:
+            self.image = Gegner.bild2
 
         #gegnerkoords
         self.g_y = g_y
@@ -34,8 +37,6 @@ class Gegner(pygame.sprite.Sprite):
 
     def setup(self):
         pass
-
-# spieler und gegner koords müssen noch ordentlich importiert werden
 
     def update(self):
         if self.hp < 1:

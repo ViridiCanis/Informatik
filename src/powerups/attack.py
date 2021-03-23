@@ -4,8 +4,9 @@ from powerups import Powerup
 
 
 class Attack(Powerup):
+    bild = pygame.image.load('images/Attack.png')
     def __init__(self, pos, spiel):
-        Powerup.__init__(self, pos, spiel, "Attack.png")
+        Powerup.__init__(self, pos, spiel, Attack.bild)
 
     def setup(self):
         pass

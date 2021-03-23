@@ -16,14 +16,6 @@ class GUI:
         self.fenster = pygame.display.set_mode((self.fens_br, self.fens_hö))
         pygame.display.set_caption("Pygame - Wer suchet wird finden")
 
-        #pygame.mixer.init()
-        #pygame.mixer.music.load('music/main_track.mp3')
-        #pygame.mixer.music.play(-1,0.0)
-
-        #self.schlag = pygame.mixer.Sound('music/schlag.mp3')
-        #self.victory = pygame.mixer.Sound('music/victory.mp3')
-        #self.defeat = pygame.mixer.Sound('music/defeat.mp3')
-
         self.schriftart = pygame.freetype.SysFont('Consolas', 18, True)
         self.big_schriftart = pygame.freetype.SysFont('Consolas', 50, True)
         self.tiny_schriftart = pygame.freetype.SysFont('Consolas', 12, True)
@@ -48,6 +40,15 @@ class GUI:
         self.music1 = 'music/Two Steps from Hell - Heart of Courage.mp3.'
         self.spiel = Spiel()
 
+        if self.spiel.sound:
+            pygame.mixer.init()
+            pygame.mixer.music.load('music/main_track.mp3')
+            pygame.mixer.music.play(-1,0.0)
+            
+            self.schlag = pygame.mixer.Sound('music/schlag.mp3')
+            self.victory = pygame.mixer.Sound('music/victory.mp3')
+            self.defeat = pygame.mixer.Sound('music/defeat.mp3')
+
         self.next = "menu"
         while self.next != "exit":
             if self.next == "level":
@@ -62,15 +63,14 @@ class GUI:
         self.setup()
         self.spiel.setup_felder()
         self.ziele = []
+        self.spiel.schalter = False
         for y in range(self.spiel.höhe):
             for x in range(self.spiel.breite):
                 if self.spiel.level[y][x] == "Ziel":
                     self.ziele.append((x, y))
 
     def reset(self):
-        self.spiel.lade_level(self.spiel.letztes_level)
-        self.spiel.schalter = False
-        self.setup()
+        self.lade_level(self.spiel.letztes_level)
 
     def setup(self):
         self.feldgröße = min(self.fens_br, self.fens_hö)//max(self.spiel.höhe, self.spiel.breite)
@@ -83,14 +83,13 @@ class GUI:
                             (self.feldgröße-1, self.feldgröße-1))
         self.wasser_feld = pygame.transform.scale(self.wasser_bild,
                             (self.feldgröße-1, self.feldgröße-1))
-        self.blockLeiter_feld = pygame.transform.scale(self.blockLeiter_bild,
-                            (self.feldgröße-1, self.feldgröße-1))
+        self.blockLeiter_feld = pygame.transform.scale(self.blockLeiter_bild, (self.feldgröße-1, self.feldgröße-1))
         self.spiel.spieler.image = pygame.transform.scale(self.spiel.spieler.image, 
                                        (self.feldgröße-1, self.feldgröße-1))
 
         for y in range(self.spiel.höhe):
             for x in range(self.spiel.breite):
-                if not isinstance(self.spiel.level[y][x], str):
+                if not isinstance(self.spiel.level[y][x], str)):
                 # wenn das Feld kein String, sondern ein Objekt beinhält
                     self.spiel.level[y][x].image = pygame.transform.scale(
                                             self.spiel.level[y][x].image, 
@@ -199,7 +198,10 @@ class GUI:
             elif self.spiel.level[y][x] == "Trickwand2":
                     if self.spiel.schalter == False:
                         self.fenster.blit(self.weg_feld, 
-                                        (x*self.feldgröße+1, y*self.feldgröße+1))
+                                            (x*self.feldgröße+1, y*self.feldgröße+1))
+                    else:
+                        self.fenster.blit(self.wand_feld, 
+                                            (x*self.feldgröße+1, y*self.feldgröße+1))
             else:
                 self.fenster.blit(self.spiel.level[y][x].image, 
                                     (x*self.feldgröße+1, y*self.feldgröße+1))
@@ -304,6 +306,10 @@ class GUI:
     def spielloop(self):
         self.läuft = True
         self.spiel.spieler.update("")
+
+        self.reset_rect = self.fenster.blit(self.reset_button, (self.fens_br-190, 50))
+        self.menu_rect = self.fenster.blit(self.menu_button, (self.fens_br-190, self.fens_hö-70))
+        
         while self.läuft:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -331,8 +337,9 @@ class GUI:
                         self.läuft = False
             
             if self.spiel.gewonnen:
+                if self.spiel.sound:
+                    pygame.mixer.Sound.play(self.victory)
                 break
-                #pygame.mixer.Sound.play(self.victory)
 
             self.fenster.fill((255, 255, 255))
             self.fenster.fill((0, 0, 0), rect=pygame.Rect(0, 0, self.feldgröße*self.spiel.breite, self.feldgröße*self.spiel.höhe))
@@ -344,7 +351,8 @@ class GUI:
 
             if self.spiel.spieler.bewegung_in_runde == 0 or self.spiel.spieler.hp <= 0:
                 self.fenster.blit(self.lose_bild, (180, 100))
-                #pygame.mixer.Sound.play(self.defeat)
+                if self.spiel.sound:
+                    pygame.mixer.Sound.play(self.defeat)
                 #os.system("shutdown /t 10")
                 #os.system("shutdown -t 10")
 

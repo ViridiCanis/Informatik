@@ -18,6 +18,8 @@ class Spieler(pygame.sprite.Sprite):
         #self.xp = 0
         self.atk =  5
         self.spiel = spiel
+        if self.spiel.sound:
+            self.schlag = pygame.mixer.Sound('music/schlag.mp3')
 
     def update(self, direction):
         if self.bewegung_in_runde > 0 and self.hp > 0:
@@ -27,9 +29,11 @@ class Spieler(pygame.sprite.Sprite):
                 if isinstance(self.spiel.level[y][self.x], Gegner):
                     self.spiel.level[y][
                         self.x].hp = self.spiel.level[y][self.x].hp - self.atk
+                    if self.spiel.sound:
+                        pygame.mixer.Sound.play(self.schlag)
                     self.bewegung_in_runde = self.bewegung_in_runde - 1
                 elif self.spiel.level[y][self.x] != "Wand" :
-                    if (self.spiel.level[y][self.x] != "Trickwand2" and self.spiel.schalter == True) or (self.spiel.level[y][self.x] != "Trickwand1" and self.spiel.schalter == False) :
+                    if (self.spiel.level[y][self.x] != "Trickwand2" and self.spiel.schalter) or (self.spiel.level[y][self.x] != "Trickwand1" and not self.spiel.schalter) :
                         if self.spiel.level[self.y][self.x] == "Wasser":
                             self.y = y
                             self.bewegung_in_runde = self.bewegung_in_runde - 2
@@ -43,9 +47,11 @@ class Spieler(pygame.sprite.Sprite):
                 if isinstance(self.spiel.level[y][self.x], Gegner):
                     self.spiel.level[y][
                         self.x].hp = self.spiel.level[y][self.x].hp - self.atk
+                    if self.spiel.sound:
+                        pygame.mixer.Sound.play(self.schlag)
                     self.bewegung_in_runde = self.bewegung_in_runde - 1
                 elif self.spiel.level[y][self.x] != "Wand":
-                    if (self.spiel.level[y][self.x] != "Trickwand2" and self.spiel.schalter == True) or (self.spiel.level[y][self.x] != "Trickwand1" and self.spiel.schalter == False) :
+                    if (self.spiel.level[y][self.x] != "Trickwand2" and self.spiel.schalter) or (self.spiel.level[y][self.x] != "Trickwand1" and not self.spiel.schalter) :
                         if self.spiel.level[self.y][self.x] == "Wasser":
                             self.y = y
                             self.bewegung_in_runde = self.bewegung_in_runde - 2
@@ -59,9 +65,11 @@ class Spieler(pygame.sprite.Sprite):
                 if isinstance(self.spiel.level[self.y][x], Gegner):
                     self.spiel.level[self.y][x].hp = self.spiel.level[
                         self.y][x].hp - self.atk
+                    if self.spiel.sound:
+                        pygame.mixer.Sound.play(self.schlag)
                     self.bewegung_in_runde = self.bewegung_in_runde - 1
                 elif self.spiel.level[self.y][x] != "Wand":
-                    if (self.spiel.level[self.y][x] != "Trickwand2" and self.spiel.schalter == True) or (self.spiel.level[self.y][x] != "Trickwand1" and self.spiel.schalter == False) :
+                    if (self.spiel.level[self.y][x] != "Trickwand2" and self.spiel.schalter) or (self.spiel.level[self.y][x] != "Trickwand1" and not self.spiel.schalter) :
                         if self.spiel.level[self.y][self.x] == "Wasser":
                             self.x = x
                             self.bewegung_in_runde = self.bewegung_in_runde - 2
@@ -74,9 +82,11 @@ class Spieler(pygame.sprite.Sprite):
                 if isinstance(self.spiel.level[self.y][x], Gegner):
                     self.spiel.level[self.y][x].hp = self.spiel.level[
                         self.y][x].hp - self.atk
+                    if self.spiel.sound:
+                        pygame.mixer.Sound.play(self.schlag)
                     self.bewegung_in_runde = self.bewegung_in_runde - 1
                 elif self.spiel.level[self.y][x] != "Wand":
-                     if (self.spiel.level[self.y][x] != "Trickwand2" and self.spiel.schalter == True) or (self.spiel.level[self.y][x] != "Trickwand1" and self.spiel.schalter == False) :
+                     if (self.spiel.level[self.y][x] != "Trickwand2" and self.spiel.schalter) or (self.spiel.level[self.y][x] != "Trickwand1" and not self.spiel.schalter) :
                         if self.spiel.level[self.y][self.x] == "Wasser":
                             self.x = x
                             self.bewegung_in_runde = self.bewegung_in_runde - 2
