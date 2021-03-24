@@ -14,7 +14,7 @@ class GUI:
         self.fens_br = 900
         self.fens_hö = 700
         self.fenster = pygame.display.set_mode((self.fens_br, self.fens_hö))
-        pygame.display.set_caption("Pygame - Wer suchet wird finden")
+        pygame.display.set_caption("Projekt - Wer suchet wird finden")
 
         self.schriftart = pygame.freetype.SysFont('Consolas', 18, True)
         self.big_schriftart = pygame.freetype.SysFont('Consolas', 50, True)

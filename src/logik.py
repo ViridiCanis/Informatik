@@ -1,6 +1,5 @@
 from spieler import Spieler
 from gegner import Gegner
-from objekt import Objekt
 import pygame
 import powerups
 
