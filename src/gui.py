@@ -350,7 +350,7 @@ class GUI:
                 self.mal_level()
 
             if self.spiel.spieler.bewegung_in_runde == 0 or self.spiel.spieler.hp <= 0:
-                self.fenster.blit(self.lose_bild, (180, 100))
+                self.fenster.blit(self.lose_bild, (50, 200))
                 if self.spiel.sound:
                     pygame.mixer.Sound.play(self.defeat)
                 #os.system("shutdown /t 10")

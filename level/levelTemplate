@@ -12,3 +12,7 @@ A = Angriff
 H = Health
 P = Gift
 b = Blockleiter(man kann über dieses Feld gehen)
+n = Trickwand ausgefahren
+N = Trickwand eingefahren
+s = Schalter
+g = Superboss
